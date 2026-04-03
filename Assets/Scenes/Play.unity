@@ -488,10 +488,11 @@ Transform:
   m_GameObject: {fileID: 472758051}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5, y: 0, z: -5}
+  m_LocalPosition: {x: -3, y: 0, z: -2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1658344225}
   m_Father: {fileID: 827706828}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &472758053
@@ -506,12 +507,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 985aff83621b645409e392737cc47bab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleGrid
-  columns: 10
-  rows: 5
-  cellSize: 2
-  originOverride: {fileID: 472758052}
-  drawGridGizmos: 1
-  gridColor: {r: 0.2, g: 0.8, b: 1, a: 0.35}
+  _columns: 10
+  _rows: 5
+  _cellSize: 1
+  _originOverride: {fileID: 0}
+  _drawGridGizmos: 1
+  _gridColor: {r: 0.2, g: 0.8, b: 1, a: 0.35}
 --- !u!1 &827706824
 GameObject:
   m_ObjectHideFlags: 0
@@ -620,7 +621,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 472758052}
@@ -780,12 +781,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1658344221}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8, y: 0.5, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
-  m_ConstrainProportionsScale: 1
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 2.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 472758052}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -796,4 +797,3 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 27326164}
   - {fileID: 827706828}
-  - {fileID: 1658344225}
