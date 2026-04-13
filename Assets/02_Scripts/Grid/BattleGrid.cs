@@ -53,6 +53,16 @@ public class BattleGrid : MonoBehaviour
             Mathf.Clamp(cell.y, 0, _rows - 1));
     }
 
+    /// <summary>열·행·셀 크기·원점(셀 0,0 모서리)을 한 번에 적용합니다. 런타임 로드·에디터 프리뷰용.</summary>
+    public void ApplyGridSettings(int columns, int rows, float cellSize, Vector3 gridOriginWorld)
+    {
+        _columns = Mathf.Max(1, columns);
+        _rows = Mathf.Max(1, rows);
+        _cellSize = Mathf.Max(0.01f, cellSize);
+        transform.position = gridOriginWorld;
+        _originOverride = null;
+    }
+
     /// <summary>월드 위치를 그리드 안으로 스냅(셀 중심).</summary>
     public Vector3 SnapWorldToCellCenter(Vector3 worldPos)
     {
