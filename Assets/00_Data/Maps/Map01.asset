@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 44bbf2137b70fae4d81f022e888e5d12, type: 3}
   m_Name: Map01
-  m_EditorClassIdentifier: Assembly-CSharp::MapData
+  m_EditorClassIdentifier: Assembly-CSharp::BoardData
   _columns: 10
   _rows: 5
   _cellSize: 1
@@ -19,12 +19,14 @@ MonoBehaviour:
   _hasHome: 1
   _homeCell: {x: 0, y: 2}
   _obstacleCells:
-  - {x: 4, y: 3}
+  - {x: 3, y: 3}
   - {x: 5, y: 3}
   - {x: 6, y: 3}
+  - {x: 3, y: 1}
   - {x: 4, y: 1}
-  - {x: 5, y: 1}
   - {x: 6, y: 1}
+  - {x: 4, y: 3}
+  - {x: 5, y: 1}
   _spawners:
   - {fileID: 11400000, guid: f13aca881375c7540a646aa483019bb2, type: 2}
   - {fileID: 11400000, guid: 809d57be2c67c9e41b1bad49e808cfaf, type: 2}

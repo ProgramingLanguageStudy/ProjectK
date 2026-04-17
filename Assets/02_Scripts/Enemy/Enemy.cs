@@ -1,84 +1,96 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 /// <summary>
-/// 격자 경로의 셀 중심을 순서대로 이동하고, 마지막 셀에 도착하면 기지에 피해를 줍니다.
+/// 격자 경로의 셀을 순서대로 이동하고, 마지막 셀에 도착하면 <see cref="ReachedLastWaypoint"/> 를 한 번 발행합니다.
 /// </summary>
 [DisallowMultipleComponent]
+[RequireComponent(typeof(TransformMover)), RequireComponent(typeof(EnemyModel))]
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private float _moveSpeed = 4f;
+    [SerializeField, ReadOnly] private TransformMover _mover;
+    [SerializeField, ReadOnly] private EnemyModel _enemyModel;
 
     private BattleGrid _grid;
-    private IReadOnlyList<Vector2Int> _path;
-    private HomeCharacter _home;
-    private int _damageOnReach;
-    private int _targetIndex;
-    private Vector3 _currentWaypoint;
-    private bool _initialized;
+    private List<Vector2Int> _cellPath = new List<Vector2Int>();
+    
+    private int _currentIndex;
+    private HomeCharacter _homeCharacter;
+    private bool _pathEndHandled;
 
-    /// <summary>경로: [0]=스폰 셀, [^1]=기지 셀.</summary>
-    public void Initialize(
-        BattleGrid grid,
-        IReadOnlyList<Vector2Int> path,
-        HomeCharacter home,
-        int damageOnReach,
-        float moveSpeed)
+    public Mover Mover => _mover;
+
+    void Awake()
     {
-        _grid = grid;
-        _path = path;
-        _home = home;
-        _damageOnReach = damageOnReach;
-        _moveSpeed = moveSpeed;
-
-        if (grid == null || path == null || path.Count == 0)
-        {
-            Debug.LogWarning("[Enemy] 경로 또는 그리드가 비었습니다.", this);
-            Destroy(gameObject);
-            return;
-        }
-
-        transform.position = _grid.CellToWorldCenter(path[0]);
-
-        if (path.Count == 1)
-        {
-            ReachBase();
-            return;
-        }
-
-        _targetIndex = 1;
-        _currentWaypoint = _grid.CellToWorldCenter(path[_targetIndex]);
-        _initialized = true;
+        _mover = GetComponent<TransformMover>();
+        _enemyModel = GetComponent<EnemyModel>();
     }
 
     void Update()
     {
-        if (!_initialized || _grid == null || _path == null)
+        if (_grid == null || _cellPath.Count < 2)
             return;
 
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            _currentWaypoint,
-            _moveSpeed * Time.deltaTime);
+        AdvanceIfEnteredNextCell();
 
-        if ((transform.position - _currentWaypoint).sqrMagnitude > 0.0001f)
-            return;
-
-        if (_targetIndex >= _path.Count - 1)
+        if (_currentIndex >= _cellPath.Count - 1)
         {
-            ReachBase();
+            if (!_pathEndHandled)
+            {
+                _pathEndHandled = true;
+                if (_homeCharacter != null)
+                    _homeCharacter.TakeDamage(_enemyModel.DamageToHome);
+            }
             return;
         }
 
-        _targetIndex++;
-        _currentWaypoint = _grid.CellToWorldCenter(_path[_targetIndex]);
+        Vector3 direction = GetMoveDirection();
+        if (direction.sqrMagnitude > 0.0001f)
+            _mover.Move(direction);
     }
 
-    void ReachBase()
+    /// <summary>
+    /// 셀 경로를 등록하고 그리드 좌표계로 이동을 준비합니다.
+    /// </summary>
+    public void Initialize(BattleGrid grid, List<Vector2Int> cellPath, HomeCharacter homeCharacter)
     {
-        _initialized = false;
-        if (_home != null && _damageOnReach > 0)
-            _home.TakeDamage(_damageOnReach);
-        Destroy(gameObject);
+        _cellPath.Clear();
+        _homeCharacter = homeCharacter;
+        _currentIndex = 0;
+        _pathEndHandled = false;
+        _grid = null;
+
+        if (grid == null || cellPath == null || cellPath.Count == 0)
+            return;
+
+        _grid = grid;
+        _cellPath.AddRange(cellPath);
+    }
+
+    private void AdvanceIfEnteredNextCell()
+    {
+        Vector2Int currentCell = _grid.WorldToCell(transform.position);
+
+        while (_currentIndex < _cellPath.Count - 1)
+        {
+            Vector2Int nextCell = _cellPath[_currentIndex + 1];
+            if (currentCell != nextCell)
+                break;
+            _currentIndex++;
+        }
+    }
+
+    private Vector3 GetMoveDirection()
+    {
+        Vector3 target = _grid.CellToWorldCenter(_cellPath[_currentIndex + 1]);
+        Vector3 toTarget = target - transform.position;
+        toTarget.y = 0f;
+
+        if (toTarget.sqrMagnitude < 0.0001f)
+            return Vector3.zero;
+
+        return toTarget.normalized;
     }
 }

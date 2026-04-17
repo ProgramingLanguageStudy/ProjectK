@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51f5bc0f0d5ae49408a0890abd60114f, type: 3}
   m_Name: Map01_Spawner_2
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnerData
-  _mapData: {fileID: 0}
+  _mapData: {fileID: 11400000, guid: b150c1615fadef1459901a91c0ec2256, type: 2}
   _spawnCell: {x: 9, y: 4}
   _routes: []

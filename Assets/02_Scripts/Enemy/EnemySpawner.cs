@@ -1,69 +1,43 @@
 using UnityEngine;
+using System.Collections.Generic;
+using Sirenix.OdinInspector;
 
 /// <summary>
-/// 전투 시작 시(선택) 한 마리 스폰하거나, 코드/인스펙터에서 테스트 스폰합니다.
+/// 적을 스폰하는 클래스
 /// </summary>
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject _enemyPrefab;
-    [SerializeField] private EnemyRoute _route;
-    [SerializeField] private HomeCharacter _homeCharacter;
-    [SerializeField] private PhaseController _phaseController;
+    [SerializeField] private Enemy _enemyPrefab;
 
-    [SerializeField] private int _damageOnReach = 10;
-    [SerializeField] private float _moveSpeed = 4f;
-    [SerializeField] private bool _spawnOnceOnCombatStart = true;
+    private Vector3 _spawnPosition;
+    private BattleGrid _grid;
+    private List<Vector2Int> _path = new List<Vector2Int>();
+    private HomeCharacter _homeCharacter;
 
-    bool _spawnedForThisSession;
-
-    void OnEnable()
+    private void Awake()
     {
-        if (_phaseController != null)
-            _phaseController.OnPhaseChanged += OnPhaseChanged;
+        
     }
 
-    void OnDisable()
+    public void Initialize(BattleGrid grid, List<Vector2Int> path, HomeCharacter homeCharacter)
     {
-        if (_phaseController != null)
-            _phaseController.OnPhaseChanged -= OnPhaseChanged;
+        _grid = grid;
+        _path = path;
+        _homeCharacter = homeCharacter;
+
+        _spawnPosition = _grid.CellToWorldCenter(_path[0]);
     }
-
-    void OnPhaseChanged(BattlePhase phase)
+    
+    [Button("Spawn Enemy")]
+    private void SpawnEnemy()
     {
-        if (phase != BattlePhase.Combat || !_spawnOnceOnCombatStart)
-            return;
-        if (_spawnedForThisSession)
-            return;
-        SpawnOne();
-        _spawnedForThisSession = true;
-    }
-
-    /// <summary>테스트용: 적 한 마리 스폰.</summary>
-    [ContextMenu("Debug/Spawn One Enemy")]
-    public void SpawnOne()
-    {
-        if (_enemyPrefab == null || _route == null || _homeCharacter == null)
-        {
-            Debug.LogWarning("[EnemySpawner] Prefab, Route, HomeCharacter를 모두 지정하세요.", this);
-            return;
-        }
-
-        var path = _route.PathCells;
-        if (path == null || path.Count == 0)
-        {
-            Debug.LogWarning("[EnemyRoute] 경로(_pathCells)에 셀이 없습니다.", _route);
-            return;
-        }
-
-        var instance = Instantiate(_enemyPrefab, transform.position, Quaternion.identity);
-        var enemy = instance.GetComponent<Enemy>();
+        Instantiate(_enemyPrefab, _spawnPosition, Quaternion.identity);
+        Enemy enemy = _enemyPrefab.GetComponent<Enemy>();
         if (enemy == null)
         {
-            Debug.LogWarning("[EnemySpawner] 프리팹에 Enemy 컴포넌트가 필요합니다.", this);
-            Destroy(instance);
+            Debug.LogError("Enemy prefab is missing Enemy component");
             return;
         }
-
-        enemy.Initialize(_route.Grid, path, _homeCharacter, _damageOnReach, _moveSpeed);
+        enemy.Initialize(_grid, _path, _homeCharacter);
     }
 }

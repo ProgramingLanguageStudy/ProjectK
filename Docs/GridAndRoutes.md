@@ -13,7 +13,7 @@
 | **목표 셀** | 경로의 **마지막** 칸 (기지가 있는 칸으로 두는 것이 일반적). |
 | **EnemyRouteData** | 경로만 담는 **ScriptableObject** (`PathCells`). 에셋은 `Assets/00_Data/EnemyRoutes/` 등에 두고, 파일명으로 맵/스포너 구분 가능. |
 | **Route Generator** | 에디터 메뉴 **Tools → KSS → Enemy Route Generator** — 좌표 목록 편집·씬 미리보기·SO 저장. |
-| **Map Authoring** | **Tools → KSS → Map Authoring** — 맵 크기·프리뷰 그리드·홈/장애물/스포너 칸 편집 후 `MapData` + `EnemySpawnerData` 저장 (`Assets/00_Data/Maps`, `Assets/00_Data/Spawners`). 기존 `MapData`를 넣고 **에디터에 적용**으로 불러와 수정 가능. |
+| **Board Authoring** | **Tools → KSS → Board Authoring** — 보드 크기·프리뷰 그리드·홈/장애물/스포너 칸 편집 후 `BoardData` + `EnemySpawnerData` 저장 (`Assets/00_Data/Maps`, `Assets/00_Data/Spawners`). 기존 `BoardData`를 넣고 **에디터에 적용**으로 불러와 수정 가능. |
 | **EnemySpawnerData** | 스폰 셀 + (추가 예정) 루트 목록. 맵 저장 시 스포너 칸마다 생성. |
 | **EnemyRoute** (컴포넌트) | (선택) 씬 편집용으로만 쓸 수 있음. 런타임 필수는 아님. |
 | **Enemy** (스크립트) | 씬/프리팹에 붙는 **이동·도착 처리**용 컴포넌트. |
